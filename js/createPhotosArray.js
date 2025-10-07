@@ -1,4 +1,4 @@
-import { getRandomInteger, createRandomId, getRandomArrayElement} from '/js/util.js';
+import { getRandomInteger, createRandomId, getRandomArrayElement } from '/js/util.js';
 import { MESSAGES, DESCRIPTION, NAMES } from '/js/data.js';
 
 const MAX_PHOTO_ID = 25;
