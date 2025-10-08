@@ -33,3 +33,20 @@ extractNumbers('ECMAScript 2022');
 extractNumbers('а я томат');
 extractNumbers(2023);
 
+//Задание 2 (модуль 5)
+function isMeetingMatchesWorkingHours(startWorkTime, endWorkTime, startMeetingTime, meetingDuration) {
+  function convertTimeToMinutes(time) {
+    const [hours, minutes] = time.split(':').map(Number);
+    return hours * 60 + minutes;
+  }
+  const startWorkMinutes = convertTimeToMinutes(startWorkTime);
+  const endWorkMinutes = convertTimeToMinutes(endWorkTime);
+  const startMeetingMinutes = convertTimeToMinutes(startMeetingTime);
+  const endMeetingMinutes = startMeetingMinutes + meetingDuration;
+
+  return startMeetingMinutes >= startWorkMinutes && endMeetingMinutes <= endWorkMinutes;
+}
+
+isMeetingMatchesWorkingHours('08:00', '17:30', '14:00', 90); // true
+isMeetingMatchesWorkingHours('8:00', '17:30', '08:00', 900); // false
+
