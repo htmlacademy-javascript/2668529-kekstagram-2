@@ -1,3 +1,1 @@
-import { createPhotosArray } from './createPhotosArray.js';
-
-createPhotosArray();
+import './pictures.js';
