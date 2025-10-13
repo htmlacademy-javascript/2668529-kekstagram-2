@@ -18,3 +18,4 @@ picturesList.forEach(({ id, url, description, likes, comments }) => {
 
 pictures.append(picturesFragment);
 
+export { picturesList };
