@@ -14,22 +14,20 @@ const socialCommentTemplate = socialComments.querySelector('.social__comment');
 const onEscapeButtonClose = (evt) => {
   if (evt.key === 'Escape') {
     evt.preventDefault();
-    // eslint-disable-next-line no-use-before-define
     closeBigPicture();
   }
 };
 
 const onCancelClickClose = (evt) => {
   evt.preventDefault();
-  // eslint-disable-next-line no-use-before-define
   closeBigPicture();
 };
 
-const closeBigPicture = () => {
+function closeBigPicture () {
   bigPicture.classList.add('hidden');
   bigPictureClose.removeEventListener('click', onCancelClickClose);
   document.removeEventListener('keydown', onEscapeButtonClose);
-};
+}
 
 const openBigPicture = (pictureId) => {
   const currentPicture = picturesList.find((picture) => picture.id === Number(pictureId));
@@ -61,6 +59,7 @@ const openBigPicture = (pictureId) => {
 pictures.addEventListener('click', (evt) => {
   const currentPicture = evt.target.closest('.picture');
   if (currentPicture) {
+    evt.preventDefault();
     openBigPicture(currentPicture.dataset.pictureId);
   }
 });
