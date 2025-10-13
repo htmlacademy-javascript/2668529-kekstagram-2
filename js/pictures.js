@@ -6,8 +6,9 @@ const pictures = document.querySelector('.pictures');
 const picturesList = createPhotosArray();
 const picturesFragment = document.createDocumentFragment();
 
-picturesList.forEach(({ url, description, likes, comments }) => {
+picturesList.forEach(({ id, url, description, likes, comments }) => {
   const pictureElement = pictureTemplate.cloneNode(true);
+  pictureElement.dataset.pictureId = id;
   pictureElement.querySelector('.picture__img').setAttribute('src', url);
   pictureElement.querySelector('.picture__img').setAttribute('alt', description);
   pictureElement.querySelector('.picture__likes').textContent = likes;
@@ -17,3 +18,4 @@ picturesList.forEach(({ url, description, likes, comments }) => {
 
 pictures.append(picturesFragment);
 
+export { picturesList };
