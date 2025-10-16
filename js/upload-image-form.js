@@ -49,22 +49,27 @@ function clearFormFields () {
   pristine.reset();
 }
 
-const validateHashtags = (value) => {
+const validateHashtagsContent = (value) => {
   if (value === '') {
     return true;
   }
   const hashtags = value.split(/\s+/);
   const hashtagRegex = /^#[a-zA-Zа-яА-ЯёЁ0-9]+$/;
 
-  if (hashtags.length > 5) {
-    return false;
-  }
+  return hashtags.every((tag) => hashtagRegex.test(tag) && tag.length <= 20 && tag.length > 1);
+};
 
+const validateHashtagsCount = (value) => {
+  const hashtags = value.split(/\s+/);
+  return hashtags.length <= 5;
+};
+
+const validateHashtagsUnique = (value) => {
+  const hashtags = value.split(/\s+/);
   const lowerCaseHashtags = hashtags.map((tag) => tag.toLowerCase());
   const uniqueHashtags = new Set(lowerCaseHashtags);
 
-  return hashtags.every((tag) => hashtagRegex.test(tag) && tag.length <= 20 && tag.length > 1) &&
-    uniqueHashtags.size === hashtags.length;
+  return uniqueHashtags.size === hashtags.length;
 };
 
 const validateDescription = (value) => value.length <= 140;
@@ -77,8 +82,21 @@ pristine.addValidator(
 
 pristine.addValidator(
   hashTagInput,
-  validateHashtags,
-  'Хэштеги должны начинаться с #, содержать только буквы/цифры и не превышать 20 символов. Максимум 5 хэштегов.'
+  validateHashtagsContent,
+  'Хэштеги должны начинаться с #, содержать только буквы/цифры и не превышать 20 символов. ' +
+  'Хештег не может состоять только из одной решётки.'
+);
+
+pristine.addValidator(
+  hashTagInput,
+  validateHashtagsCount,
+  'Нельзя указать больше 5 хэштегов!'
+);
+
+pristine.addValidator(
+  hashTagInput,
+  validateHashtagsUnique,
+  'Хэштеги не могут повторяться!'
 );
 
 uploadFile.addEventListener('change', openUploadImageModal);
@@ -90,4 +108,3 @@ uploadImageForm.addEventListener('submit', (event) => {
     uploadImageForm.submit();
   }
 });
-
