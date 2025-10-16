@@ -8,6 +8,7 @@ const descriptionInput = uploadImageForm.querySelector('.text__description');
 const onEscapeButtonClose = (evt) => {
   if (evt.key === 'Escape') {
     evt.preventDefault();
+    resetForm();
     closeUploadImgModal();
   }
 };
@@ -68,10 +69,10 @@ uploadImageForm.addEventListener('submit', (event) => {
 });
 
 // Сброс всех полей формы
-const resetForm = () => {
+function resetForm () {
   uploadImageForm.reset();
   pristine.reset();
-};
+}
 
 // Обработка кнопки отмены
 photoEditorCancelButton.addEventListener('click', () => {
