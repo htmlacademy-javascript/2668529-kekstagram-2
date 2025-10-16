@@ -1,20 +1,25 @@
 const uploadImageForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadImageForm.querySelector('#upload-file');
-const uploadImgModal = uploadImageForm.querySelector('.img-upload__overlay');
-const uploadModalCancelButton = uploadImgModal.querySelector('#upload-cancel');
+const uploadImageModal = uploadImageForm.querySelector('.img-upload__overlay');
+const uploadModalCancelButton = uploadImageModal.querySelector('#upload-cancel');
 const hashTagInput = uploadImageForm.querySelector('.text__hashtags');
 const descriptionInput = uploadImageForm.querySelector('.text__description');
 
 const onEscapeButtonClose = (evt) => {
   if (evt.key === 'Escape') {
     evt.preventDefault();
-    clearFormFields();
-    closeUploadImgModal();
+    if(document.activeElement === hashTagInput || document.activeElement === descriptionInput) {
+      evt.stopPropagation();
+    } else {
+      clearFormFields();
+      closeUploadImgModal();
+    }
   }
 };
 
 const onCancelButtonClick = (evt) => {
   evt.preventDefault();
+  clearFormFields();
   closeUploadImgModal();
 };
 
@@ -26,7 +31,7 @@ const pristine = new Pristine(uploadImageForm, {
 
 function closeUploadImgModal() {
   document.body.classList.remove('modal-open');
-  uploadImgModal.classList.add('hidden');
+  uploadImageModal.classList.add('hidden');
   document.removeEventListener('keydown', onEscapeButtonClose);
   uploadModalCancelButton.removeEventListener('click', onCancelButtonClick);
   uploadFile.value = '';
@@ -34,7 +39,7 @@ function closeUploadImgModal() {
 
 const openUploadImageModal = () => {
   document.body.classList.add('modal-open');
-  uploadImgModal.classList.remove('hidden');
+  uploadImageModal.classList.remove('hidden');
   uploadModalCancelButton.addEventListener('click', onCancelButtonClick);
   document.addEventListener('keydown', onEscapeButtonClose);
 };
@@ -77,6 +82,3 @@ uploadImageForm.addEventListener('submit', (event) => {
   }
 });
 
-uploadModalCancelButton.addEventListener('click', () => {
-  clearFormFields();
-});
