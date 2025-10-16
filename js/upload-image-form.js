@@ -54,8 +54,17 @@ const validateHashtags = (value) => {
     return true;
   }
   const hashtags = value.split(/\s+/);
-  const regex = /^#[a-zA-Zа-яА-ЯёЁ0-9]{1,19}$/;
-  return hashtags.length <= 5 && hashtags.every((tag) => regex.test(tag));
+  const hashtagRegex = /^#[a-zA-Zа-яА-ЯёЁ0-9]+$/;
+
+  if (hashtags.length > 5) {
+    return false;
+  }
+
+  const lowerCaseHashtags = hashtags.map((tag) => tag.toLowerCase());
+  const uniqueHashtags = new Set(lowerCaseHashtags);
+
+  return hashtags.every((tag) => hashtagRegex.test(tag) && tag.length <= 20 && tag.length > 1) &&
+    uniqueHashtags.size === hashtags.length;
 };
 
 const validateDescription = (value) => value.length <= 140;
