@@ -5,6 +5,15 @@ const uploadModalCancelButton = uploadImageModal.querySelector('#upload-cancel')
 const hashTagInput = uploadImageForm.querySelector('.text__hashtags');
 const descriptionInput = uploadImageForm.querySelector('.text__description');
 
+const imagePreview = uploadImageForm.querySelector('.img-upload__preview');
+const smallerSizeButton = uploadImageForm.querySelector('.scale__control--smaller');
+const biggerSizeButton = uploadImageForm.querySelector('.scale__control--bigger');
+const scaleControlValue = uploadImageForm.querySelector('.scale__control--value');
+
+const SIZE_SCALE_STEP = 0.25;
+
+let currentScale = 1;
+
 const onEscapeButtonClose = (evt) => {
   if (evt.key === 'Escape') {
     evt.preventDefault();
@@ -48,6 +57,22 @@ function clearFormFields () {
   uploadImageForm.reset();
   pristine.reset();
 }
+
+const onSmallerSizeButtonClick = () => {
+  if (currentScale > SIZE_SCALE_STEP) {
+    currentScale = currentScale - SIZE_SCALE_STEP;
+    imagePreview.style.transform = `scale(${currentScale})`;
+    scaleControlValue.value = `${currentScale * 100}%`;
+  }
+};
+
+const onBiggerSizeButtonClick = () => {
+  if (currentScale < 1) {
+    currentScale = currentScale + SIZE_SCALE_STEP;
+    imagePreview.style.transform = `scale(${currentScale})`;
+    scaleControlValue.value = `${currentScale * 100}%`;
+  }
+};
 
 const validateHashtagsContent = (value) => {
   if (value === '') {
@@ -108,3 +133,7 @@ uploadImageForm.addEventListener('submit', (event) => {
     uploadImageForm.submit();
   }
 });
+
+smallerSizeButton.addEventListener('click', onSmallerSizeButtonClick);
+
+biggerSizeButton.addEventListener('click', onBiggerSizeButtonClick);
