@@ -25,6 +25,7 @@
     "npm": "^10"
   },
   "dependencies": {
+    "nouislider": "^15.8.1",
     "pristinejs": "^1.1.0"
   }
 }
