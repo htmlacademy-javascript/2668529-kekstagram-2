@@ -4,7 +4,7 @@ export const setupEffects = (uploadImageForm) => {
   const effectLevelValue = uploadImageForm.querySelector('.effect-level__value');
   const effectLevelContainer = uploadImageForm.querySelector('.img-upload__effect-level');
   const effectRadioButtons = uploadImageForm.querySelectorAll('.effects__radio');
-
+  //todo вынести слайдер из функции
   noUiSlider.create(sliderElement, {
     range: { min: 0, max: 100 },
     start: 100,
@@ -60,7 +60,7 @@ export const setupEffects = (uploadImageForm) => {
     effectLevelValue.value = value;
     applyEffect(currentEffect, value);
   });
-
+  //todo переделать через effects-list
   effectRadioButtons.forEach((radio) => {
     radio.addEventListener('change', (evt) => {
       setEffect(evt.target.value);
