@@ -5,6 +5,11 @@ const uploadModalCancelButton = uploadImageModal.querySelector('#upload-cancel')
 const hashTagInput = uploadImageForm.querySelector('.text__hashtags');
 const descriptionInput = uploadImageForm.querySelector('.text__description');
 
+const MAX_COMMENT_LENGTH = 140;
+const MAX_HASHTAGS_LENGTH = 20;
+const MIN_HASHTAGS_LENGTH = 1;
+const MAX_HASHTAG_COUNT = 5;
+
 const onEscapeButtonClose = (evt) => {
   if (evt.key === 'Escape') {
     evt.preventDefault();
@@ -56,12 +61,12 @@ const validateHashtagsContent = (value) => {
   const hashtags = value.split(/\s+/);
   const hashtagRegex = /^#[a-zA-Zа-яА-ЯёЁ0-9]+$/;
 
-  return hashtags.every((tag) => hashtagRegex.test(tag) && tag.length <= 20 && tag.length > 1);
+  return hashtags.every((tag) => hashtagRegex.test(tag) && tag.length <= MAX_HASHTAGS_LENGTH && tag.length > MIN_HASHTAGS_LENGTH);
 };
 
 const validateHashtagsCount = (value) => {
   const hashtags = value.split(/\s+/);
-  return hashtags.length <= 5;
+  return hashtags.length <= MAX_HASHTAG_COUNT;
 };
 
 const validateHashtagsUnique = (value) => {
@@ -72,7 +77,7 @@ const validateHashtagsUnique = (value) => {
   return uniqueHashtags.size === hashtags.length;
 };
 
-const validateDescription = (value) => value.length <= 140;
+const validateDescription = (value) => value.length <= MAX_COMMENT_LENGTH;
 
 pristine.addValidator(
   descriptionInput,
