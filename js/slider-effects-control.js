@@ -7,7 +7,7 @@ noUiSlider.create(sliderElement, {
   connect: 'lower'
 });
 
-export const setupEffects = (uploadImageForm) => {
+const setupEffects = (uploadImageForm) => {
   const imagePreview = uploadImageForm.querySelector('.img-upload__preview img');
   const effectLevelValue = uploadImageForm.querySelector('.effect-level__value');
   const effectLevelContainer = uploadImageForm.querySelector('.img-upload__effect-level');
@@ -69,3 +69,25 @@ export const setupEffects = (uploadImageForm) => {
 
   setEffect('none');
 };
+
+const resetEffects = () => {
+  const imagePreview = document.querySelector('.img-upload__preview img');
+  const effectLevelContainer = document.querySelector('.img-upload__effect-level');
+  const defaultEffect = document.querySelector('#effect-none');
+
+  imagePreview.style.filter = '';
+  effectLevelContainer.classList.add('hidden');
+
+  sliderElement.noUiSlider.updateOptions({
+    range: { min: 0, max: 100 },
+    start: 100,
+    step: 1,
+  });
+
+  if (defaultEffect) {
+    defaultEffect.checked = true;
+  }
+};
+
+export { setupEffects, resetEffects };
+

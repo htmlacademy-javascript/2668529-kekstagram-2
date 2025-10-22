@@ -1,4 +1,4 @@
-export const setupScaling = (uploadImageForm) => {
+const setupScaling = (uploadImageForm) => {
   const imagePreview = uploadImageForm.querySelector('.img-upload__preview img');
   const smallerSizeButton = uploadImageForm.querySelector('.scale__control--smaller');
   const biggerSizeButton = uploadImageForm.querySelector('.scale__control--bigger');
@@ -35,3 +35,14 @@ export const setupScaling = (uploadImageForm) => {
   smallerSizeButton.addEventListener('click', onSmallerSizeButtonClick);
   biggerSizeButton.addEventListener('click', onBiggerSizeButtonClick);
 };
+
+const resetScale = () => {
+  const imagePreview = document.querySelector('.img-upload__preview img');
+  const scaleValue = document.querySelector('.scale__control--value');
+  const DEFAULT_SCALE = 100;
+
+  imagePreview.style.transform = `scale(${DEFAULT_SCALE / 100})`;
+  scaleValue.value = `${DEFAULT_SCALE}%`;
+};
+
+export { setupScaling, resetScale };

@@ -1,6 +1,6 @@
 import { setupValidation } from './form-fields-validation.js';
-import { setupScaling } from './image-scaling.js';
-import { setupEffects } from './slider-effects-control.js';
+import { setupScaling, resetScale } from './image-scaling.js';
+import { setupEffects, resetEffects } from './slider-effects-control.js';
 
 const uploadImageForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadImageForm.querySelector('#upload-file');
@@ -32,6 +32,8 @@ const onCancelButtonClick = (evt) => {
 function closeUploadImgModal() {
   document.body.classList.remove('modal-open');
   uploadImageModal.classList.add('hidden');
+  resetScale();
+  resetEffects();
   document.removeEventListener('keydown', onEscapeButtonClose);
   uploadModalCancelButton.removeEventListener('click', onCancelButtonClick);
   uploadFile.value = '';
