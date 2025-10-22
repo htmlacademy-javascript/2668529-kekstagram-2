@@ -1,17 +1,17 @@
+const sliderElement = document.querySelector('.effect-level__slider');
+
+noUiSlider.create(sliderElement, {
+  range: { min: 0, max: 100 },
+  start: 100,
+  step: 1,
+  connect: 'lower'
+});
+
 export const setupEffects = (uploadImageForm) => {
   const imagePreview = uploadImageForm.querySelector('.img-upload__preview img');
-  const sliderElement = uploadImageForm.querySelector('.effect-level__slider');
   const effectLevelValue = uploadImageForm.querySelector('.effect-level__value');
   const effectLevelContainer = uploadImageForm.querySelector('.img-upload__effect-level');
-  const effectRadioButtons = uploadImageForm.querySelectorAll('.effects__radio');
-  //todo вынести слайдер из функции
-  noUiSlider.create(sliderElement, {
-    range: { min: 0, max: 100 },
-    start: 100,
-    step: 1,
-    connect: 'lower'
-  });
-
+  const effectsList = uploadImageForm.querySelector('.effects__list');
   let currentEffect = 'none';
 
   const applyEffect = (effect, value) => {
@@ -60,11 +60,11 @@ export const setupEffects = (uploadImageForm) => {
     effectLevelValue.value = value;
     applyEffect(currentEffect, value);
   });
-  //todo переделать через effects-list
-  effectRadioButtons.forEach((radio) => {
-    radio.addEventListener('change', (evt) => {
+
+  effectsList.addEventListener('change', (evt) => {
+    if (evt.target.classList.contains('effects__radio')) {
       setEffect(evt.target.value);
-    });
+    }
   });
 
   setEffect('none');
