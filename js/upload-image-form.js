@@ -1,3 +1,7 @@
+import { setupValidation } from './form-fields-validation.js';
+import { setupScaling, resetScale } from './image-scaling.js';
+import { setupEffects, resetEffects } from './slider-effects-control.js';
+
 const uploadImageForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadImageForm.querySelector('#upload-file');
 const uploadImageModal = uploadImageForm.querySelector('.img-upload__overlay');
@@ -5,10 +9,7 @@ const uploadModalCancelButton = uploadImageModal.querySelector('#upload-cancel')
 const hashTagInput = uploadImageForm.querySelector('.text__hashtags');
 const descriptionInput = uploadImageForm.querySelector('.text__description');
 
-const MAX_COMMENT_LENGTH = 140;
-const MAX_HASHTAGS_LENGTH = 20;
-const MIN_HASHTAGS_LENGTH = 1;
-const MAX_HASHTAG_COUNT = 5;
+let pristine;
 
 const onEscapeButtonClose = (evt) => {
   if (evt.key === 'Escape') {
@@ -28,15 +29,11 @@ const onCancelButtonClick = (evt) => {
   closeUploadImgModal();
 };
 
-const pristine = new Pristine(uploadImageForm, {
-  classTo: 'img-upload__form',
-  errorTextParent: 'img-upload__field-wrapper',
-  errorTextClass: 'img-upload__field-wrapper--error'
-});
-
 function closeUploadImgModal() {
   document.body.classList.remove('modal-open');
   uploadImageModal.classList.add('hidden');
+  resetScale();
+  resetEffects();
   document.removeEventListener('keydown', onEscapeButtonClose);
   uploadModalCancelButton.removeEventListener('click', onCancelButtonClick);
   uploadFile.value = '';
@@ -45,6 +42,11 @@ function closeUploadImgModal() {
 const openUploadImageModal = () => {
   document.body.classList.add('modal-open');
   uploadImageModal.classList.remove('hidden');
+
+  pristine = setupValidation(uploadImageForm);
+  setupScaling(uploadImageForm);
+  setupEffects(uploadImageForm);
+
   uploadModalCancelButton.addEventListener('click', onCancelButtonClick);
   document.addEventListener('keydown', onEscapeButtonClose);
 };
@@ -54,60 +56,10 @@ function clearFormFields () {
   pristine.reset();
 }
 
-const validateHashtagsContent = (value) => {
-  if (value === '') {
-    return true;
-  }
-  const hashtags = value.split(/\s+/);
-  const hashtagRegex = /^#[a-zA-Zа-яА-ЯёЁ0-9]+$/;
-
-  return hashtags.every((tag) => hashtagRegex.test(tag) && tag.length <= MAX_HASHTAGS_LENGTH && tag.length > MIN_HASHTAGS_LENGTH);
-};
-
-const validateHashtagsCount = (value) => {
-  const hashtags = value.split(/\s+/);
-  return hashtags.length <= MAX_HASHTAG_COUNT;
-};
-
-const validateHashtagsUnique = (value) => {
-  const hashtags = value.split(/\s+/);
-  const lowerCaseHashtags = hashtags.map((tag) => tag.toLowerCase());
-  const uniqueHashtags = new Set(lowerCaseHashtags);
-
-  return uniqueHashtags.size === hashtags.length;
-};
-
-const validateDescription = (value) => value.length <= MAX_COMMENT_LENGTH;
-
-pristine.addValidator(
-  descriptionInput,
-  validateDescription,
-  'Описание не должно превышать 140 символов.'
-);
-
-pristine.addValidator(
-  hashTagInput,
-  validateHashtagsContent,
-  'Хэштеги должны начинаться с #, содержать только буквы/цифры и не превышать 20 символов. ' +
-  'Хештег не может состоять только из одной решётки.'
-);
-
-pristine.addValidator(
-  hashTagInput,
-  validateHashtagsCount,
-  'Нельзя указать больше 5 хэштегов!'
-);
-
-pristine.addValidator(
-  hashTagInput,
-  validateHashtagsUnique,
-  'Хэштеги не могут повторяться!'
-);
-
 uploadFile.addEventListener('change', openUploadImageModal);
 
-uploadImageForm.addEventListener('submit', (event) => {
-  event.preventDefault();
+uploadImageForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
   const isValid = pristine.validate();
   if (isValid) {
     uploadImageForm.submit();
