@@ -1,6 +1,7 @@
 import { setupValidation } from './form-fields-validation.js';
 import { setupScaling, resetScale } from './image-scaling.js';
 import { setupEffects, resetEffects } from './slider-effects-control.js';
+import { sendData } from './api.js';
 
 const uploadImageForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadImageForm.querySelector('#upload-file');
@@ -8,6 +9,12 @@ const uploadImageModal = uploadImageForm.querySelector('.img-upload__overlay');
 const uploadModalCancelButton = uploadImageModal.querySelector('#upload-cancel');
 const hashTagInput = uploadImageForm.querySelector('.text__hashtags');
 const descriptionInput = uploadImageForm.querySelector('.text__description');
+const submitButton = uploadImageForm.querySelector('#upload-submit');
+
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Публикуется...'
+};
 
 let pristine;
 
@@ -56,12 +63,64 @@ function clearFormFields () {
   pristine.reset();
 }
 
+const showSuccessMessage = () => {
+  const template = document.querySelector('#success').content.querySelector('.success');
+  const message = template.cloneNode(true);
+  document.body.appendChild(message);
+
+  const closeMessage = () => message.remove();
+  message.querySelector('.success__button').addEventListener('click', closeMessage);
+  document.addEventListener('keydown', (evt) => evt.key === 'Escape' && closeMessage());
+  message.addEventListener('click', (evt) => {
+    if (!evt.target.closest('.success__inner')) {
+      closeMessage();
+    }
+  });
+};
+
+const showErrorMessage = () => {
+  const template = document.querySelector('#error').content.querySelector('.error');
+  const message = template.cloneNode(true);
+  document.body.appendChild(message);
+
+  const closeMessage = () => message.remove();
+  message.querySelector('.error__button').addEventListener('click', closeMessage);
+  document.addEventListener('keydown', (evt) => evt.key === 'Escape' && closeMessage());
+  message.addEventListener('click', (evt) => {
+    if (!evt.target.closest('.error__inner')) {
+      closeMessage();
+    }
+  });
+};
+
+
 uploadFile.addEventListener('change', openUploadImageModal);
 
-uploadImageForm.addEventListener('submit', (evt) => {
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = SubmitButtonText.SENDING;
+};
+
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = SubmitButtonText.IDLE;
+};
+
+uploadImageForm.addEventListener('submit', async (evt) => {
   evt.preventDefault();
+
   const isValid = pristine.validate();
   if (isValid) {
-    uploadImageForm.submit();
+    blockSubmitButton();
+    try {
+      await sendData(new FormData(uploadImageForm));
+      showSuccessMessage();
+      clearFormFields();
+      closeUploadImgModal();
+    } catch {
+      showErrorMessage();
+    } finally {
+      unblockSubmitButton();
+    }
   }
 });
