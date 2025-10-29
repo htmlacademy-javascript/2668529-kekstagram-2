@@ -10,6 +10,8 @@ const uploadModalCancelButton = uploadImageModal.querySelector('#upload-cancel')
 const hashTagInput = uploadImageForm.querySelector('.text__hashtags');
 const descriptionInput = uploadImageForm.querySelector('.text__description');
 const submitButton = uploadImageForm.querySelector('#upload-submit');
+const successModalTemplate = document.querySelector('#success').content.querySelector('.success');
+const errorModalTemplate = document.querySelector('#error').content.querySelector('.error');
 
 const SubmitButtonText = {
   IDLE: 'Опубликовать',
@@ -49,11 +51,9 @@ function closeUploadImgModal() {
 const openUploadImageModal = () => {
   document.body.classList.add('modal-open');
   uploadImageModal.classList.remove('hidden');
-
   pristine = setupValidation(uploadImageForm);
   setupScaling(uploadImageForm);
   setupEffects(uploadImageForm);
-
   uploadModalCancelButton.addEventListener('click', onCancelButtonClick);
   document.addEventListener('keydown', onEscapeButtonClose);
 };
@@ -64,35 +64,32 @@ function clearFormFields () {
 }
 
 const showSuccessMessage = () => {
-  const template = document.querySelector('#success').content.querySelector('.success');
-  const message = template.cloneNode(true);
-  document.body.appendChild(message);
-
-  const closeMessage = () => message.remove();
-  message.querySelector('.success__button').addEventListener('click', closeMessage);
-  document.addEventListener('keydown', (evt) => evt.key === 'Escape' && closeMessage());
-  message.addEventListener('click', (evt) => {
+  const successMessage = successModalTemplate.cloneNode(true);
+  const successModalButton = successMessage.querySelector('.success__button');
+  document.body.appendChild(successMessage);
+  const closeSuccessMessage = () => successMessage.remove();
+  successModalButton.addEventListener('click', closeSuccessMessage);
+  document.addEventListener('keydown', (evt) => evt.key === 'Escape' && closeSuccessMessage());
+  successMessage.addEventListener('click', (evt) => {
     if (!evt.target.closest('.success__inner')) {
-      closeMessage();
+      closeSuccessMessage();
     }
   });
 };
 
 const showErrorMessage = () => {
-  const template = document.querySelector('#error').content.querySelector('.error');
-  const message = template.cloneNode(true);
-  document.body.appendChild(message);
-
-  const closeMessage = () => message.remove();
-  message.querySelector('.error__button').addEventListener('click', closeMessage);
-  document.addEventListener('keydown', (evt) => evt.key === 'Escape' && closeMessage());
-  message.addEventListener('click', (evt) => {
+  const errorMessage = errorModalTemplate.cloneNode(true);
+  const errorModalButton = errorMessage.querySelector('.error__button');
+  document.body.appendChild(errorMessage);
+  const closeErrorMessage = () => errorMessage.remove();
+  errorModalButton.addEventListener('click', closeErrorMessage);
+  document.addEventListener('keydown', (evt) => evt.key === 'Escape' && closeErrorMessage());
+  errorMessage.addEventListener('click', (evt) => {
     if (!evt.target.closest('.error__inner')) {
-      closeMessage();
+      closeErrorMessage();
     }
   });
 };
-
 
 uploadFile.addEventListener('change', openUploadImageModal);
 
@@ -108,7 +105,6 @@ const unblockSubmitButton = () => {
 
 uploadImageForm.addEventListener('submit', async (evt) => {
   evt.preventDefault();
-
   const isValid = pristine.validate();
   if (isValid) {
     blockSubmitButton();
