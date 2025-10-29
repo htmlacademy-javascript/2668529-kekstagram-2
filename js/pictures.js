@@ -6,7 +6,6 @@ const templateDataError = document.querySelector('#data-error').content.querySel
 
 const renderPictures = (picturesList) => {
   const picturesFragment = document.createDocumentFragment();
-
   picturesList.forEach(({ id, url, description, likes, comments }) => {
     const pictureElement = pictureTemplate.cloneNode(true);
     pictureElement.dataset.pictureId = id;
@@ -16,21 +15,19 @@ const renderPictures = (picturesList) => {
     pictureElement.querySelector('.picture__comments').textContent = comments.length;
     picturesFragment.appendChild(pictureElement);
   });
-
   pictures.append(picturesFragment);
 };
 
-
 const showDataError = () => {
-  const errorMessage = templateDataError.cloneNode(true);
-  document.body.append(errorMessage);
-  setTimeout(() => errorMessage.remove(), 5000);
+  const dataErrorMessage = templateDataError.cloneNode(true);
+  document.body.append(dataErrorMessage);
+  setTimeout(() => dataErrorMessage.remove(), 5000);
 };
 
 const initPictures = async () => {
   try {
-    const photos = await getData();
-    renderPictures(photos);
+    const thumbnails = await getData();
+    renderPictures(thumbnails);
   } catch (error) {
     showDataError();
   }
