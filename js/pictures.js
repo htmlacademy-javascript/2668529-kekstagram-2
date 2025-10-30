@@ -4,6 +4,8 @@ const pictureTemplate = document.querySelector('#picture').content.querySelector
 const pictures = document.querySelector('.pictures');
 const templateDataError = document.querySelector('#data-error').content.querySelector('.data-error');
 
+let allPictures = [];
+
 const renderPictures = (picturesList) => {
   const picturesFragment = document.createDocumentFragment();
   picturesList.forEach(({ id, url, description, likes, comments }) => {
@@ -26,11 +28,13 @@ const showDataError = () => {
 
 const initPictures = async () => {
   try {
-    const thumbnails = await getData();
-    renderPictures(thumbnails);
+    allPictures = await getData();
+    renderPictures(allPictures);
   } catch (error) {
     showDataError();
   }
 };
 
-export { initPictures };
+const getAllPictures = () => allPictures;
+
+export { initPictures, getAllPictures };

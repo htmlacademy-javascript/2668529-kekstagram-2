@@ -1,5 +1,5 @@
-import { getData } from './api.js';
 import { showComments, clearComments } from './comments.js';
+import { getAllPictures } from './pictures.js';
 
 const pictures = document.querySelector('.pictures');
 const bigPicture = document.querySelector('.big-picture');
@@ -41,8 +41,8 @@ function openBigPicture(picture) {
   bigPictureClose.addEventListener('click', onCancelClickClose);
 }
 
-async function initFullSizePicture() {
-  picturesData = await getData();
+const initFullSizePicture = () => {
+  picturesData = getAllPictures();
   pictures.addEventListener('click', (evt) => {
     const currentPicture = evt.target.closest('.picture');
     if (currentPicture) {
@@ -54,6 +54,6 @@ async function initFullSizePicture() {
       }
     }
   });
-}
+};
 
 export { initFullSizePicture };
