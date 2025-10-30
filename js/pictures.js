@@ -35,12 +35,12 @@ const showDataError = () => {
   setTimeout(() => dataErrorMessage.remove(), 5000);
 };
 
-const getRandomUnique = (array, count) => {
+const getRandomUniquePictures = (array, count) => {
   const shuffled = [...array].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 };
 
-const sortByComments = (a, b) => b.comments.length - a.comments.length;
+const sortPicturesByComments = (a, b) => b.comments.length - a.comments.length;
 
 const debounce = (callback, delay = RERENDER_DELAY) => {
   let timeout;
@@ -50,16 +50,16 @@ const debounce = (callback, delay = RERENDER_DELAY) => {
   };
 };
 
-const updatePictures = (filterId) => {
+const updatePicturesList = (filterId) => {
   clearPictures();
   let filteredPictures = [];
 
   switch (filterId) {
     case 'filter-random':
-      filteredPictures = getRandomUnique(allPictures, RANDOM_PICTURES_COUNT);
+      filteredPictures = getRandomUniquePictures(allPictures, RANDOM_PICTURES_COUNT);
       break;
     case 'filter-discussed':
-      filteredPictures = [...allPictures].sort(sortByComments);
+      filteredPictures = [...allPictures].sort(sortPicturesByComments);
       break;
     default:
       filteredPictures = allPictures;
@@ -69,7 +69,7 @@ const updatePictures = (filterId) => {
 };
 
 const setFilterHandlers = () => {
-  const debouncedUpdate = debounce(updatePictures);
+  const debouncedUpdate = debounce(updatePicturesList);
   filters.addEventListener('click', (evt) => {
     const button = evt.target.closest('.img-filters__button');
     if (!button) {
