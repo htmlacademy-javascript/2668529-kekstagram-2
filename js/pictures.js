@@ -1,4 +1,5 @@
 import { getData } from './api.js';
+import { debounce } from './util.js';
 
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const pictures = document.querySelector('.pictures');
@@ -42,14 +43,6 @@ const getRandomUniquePictures = (array, count) => {
 
 const sortPicturesByComments = (a, b) => b.comments.length - a.comments.length;
 
-const debounce = (callback, delay = RERENDER_DELAY) => {
-  let timeout;
-  return (...args) => {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => callback(...args), delay);
-  };
-};
-
 const updatePicturesList = (filterId) => {
   clearPictures();
   let filteredPictures = [];
@@ -69,7 +62,7 @@ const updatePicturesList = (filterId) => {
 };
 
 const setFilterHandlers = () => {
-  const debouncedUpdate = debounce(updatePicturesList);
+  const debouncedUpdate = debounce(updatePicturesList, RERENDER_DELAY);
   filters.addEventListener('click', (evt) => {
     const button = evt.target.closest('.img-filters__button');
     if (!button) {
