@@ -81,14 +81,40 @@ const showErrorMessage = () => {
   const errorMessage = errorModalTemplate.cloneNode(true);
   const errorModalButton = errorMessage.querySelector('.error__button');
   document.body.appendChild(errorMessage);
-  const closeErrorMessage = () => errorMessage.remove();
-  errorModalButton.addEventListener('click', closeErrorMessage);
-  document.addEventListener('keydown', (evt) => evt.key === 'Escape' && closeErrorMessage());
-  errorMessage.addEventListener('click', (evt) => {
-    if (!evt.target.closest('.error__inner')) {
+
+  const closeErrorMessage = () => {
+    const current = document.querySelector('.error');
+    if (current) {
+      current.remove();
+    }
+    document.removeEventListener('keydown', onErrorEscKeydown, true);
+    document.removeEventListener('click', onErrorOutsideClick, true);
+    errorModalButton.removeEventListener('click', onErrorButtonClick, true);
+  };
+
+  function onErrorEscKeydown (evt) {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      evt.stopImmediatePropagation();
       closeErrorMessage();
     }
-  });
+  }
+
+  function onErrorOutsideClick (evt) {
+    if (!evt.target.closest('.error__inner')) {
+      evt.stopImmediatePropagation();
+      closeErrorMessage();
+    }
+  }
+
+  function onErrorButtonClick (evt) {
+    evt.stopImmediatePropagation();
+    closeErrorMessage();
+  }
+
+  document.addEventListener('keydown', onErrorEscKeydown, true);
+  document.addEventListener('click', onErrorOutsideClick, true);
+  errorModalButton.addEventListener('click', onErrorButtonClick, true);
 };
 
 uploadFile.addEventListener('change', openUploadImageModal);
