@@ -37,7 +37,7 @@ const validateDescription = (value) => value.length <= VALIDATION_RULES.MAX_COMM
 
 const setupValidation = () => {
   const pristine = new Pristine(uploadImageForm, {
-    classTo: 'img-upload__form',
+    classTo: 'img-upload__field-wrapper',
     errorTextParent: 'img-upload__field-wrapper',
     errorTextClass: 'img-upload__field-wrapper--error'
   });
