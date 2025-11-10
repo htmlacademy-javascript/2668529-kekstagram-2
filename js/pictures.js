@@ -9,6 +9,7 @@ const filterButton = filters.querySelectorAll('.img-filters__button');
 
 const RANDOM_PICTURES_COUNT = 10;
 const RERENDER_DELAY = 500;
+const ERROR_MESSAGE_REMOVE_TIMEOUT = 5000;
 
 let allPictures = [];
 
@@ -33,7 +34,7 @@ const renderPictures = (picturesList) => {
 const showDataError = () => {
   const dataErrorMessage = templateDataError.cloneNode(true);
   document.body.append(dataErrorMessage);
-  setTimeout(() => dataErrorMessage.remove(), 5000);
+  setTimeout(() => dataErrorMessage.remove(), ERROR_MESSAGE_REMOVE_TIMEOUT);
 };
 
 const getRandomUniquePictures = (array, count) => {
