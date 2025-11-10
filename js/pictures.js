@@ -1,14 +1,11 @@
 import { getData } from './api.js';
-import { debounce } from './util.js';
+import { setFilterHandlers } from './filter.js';
 
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const pictures = document.querySelector('.pictures');
 const templateDataError = document.querySelector('#data-error').content.querySelector('.data-error');
 const filters = document.querySelector('.img-filters');
-const filterButton = filters.querySelectorAll('.img-filters__button');
 
-const RANDOM_PICTURES_COUNT = 10;
-const RERENDER_DELAY = 500;
 const ERROR_MESSAGE_REMOVE_TIMEOUT = 5000;
 
 let allPictures = [];
@@ -37,44 +34,6 @@ const showDataError = () => {
   setTimeout(() => dataErrorMessage.remove(), ERROR_MESSAGE_REMOVE_TIMEOUT);
 };
 
-const getRandomUniquePictures = (array, count) => {
-  const shuffled = [...array].sort(() => Math.random() - 0.5);
-  return shuffled.slice(0, count);
-};
-
-const sortPicturesByComments = (a, b) => b.comments.length - a.comments.length;
-
-const updatePicturesList = (filterId) => {
-  clearPictures();
-  let filteredPictures = [];
-
-  switch (filterId) {
-    case 'filter-random':
-      filteredPictures = getRandomUniquePictures(allPictures, RANDOM_PICTURES_COUNT);
-      break;
-    case 'filter-discussed':
-      filteredPictures = [...allPictures].sort(sortPicturesByComments);
-      break;
-    default:
-      filteredPictures = allPictures;
-  }
-
-  renderPictures(filteredPictures);
-};
-
-const setFilterHandlers = () => {
-  const debouncedUpdate = debounce(updatePicturesList, RERENDER_DELAY);
-  filters.addEventListener('click', (evt) => {
-    const button = evt.target.closest('.img-filters__button');
-    if (!button) {
-      return;
-    }
-    filterButton.forEach((btn) => btn.classList.remove('img-filters__button--active'));
-    button.classList.add('img-filters__button--active');
-    debouncedUpdate(button.id);
-  });
-};
-
 const initPictures = async () => {
   try {
     allPictures = await getData();
@@ -88,4 +47,4 @@ const initPictures = async () => {
 
 const getAllPictures = () => allPictures;
 
-export { initPictures, getAllPictures };
+export { initPictures, getAllPictures, clearPictures, renderPictures };
