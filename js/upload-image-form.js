@@ -19,11 +19,16 @@ const SubmitButtonText = {
 };
 
 let pristine;
+let activeUploadMessage = null;
+let isUploadMessageOpen = false;
 
 const onEscapeButtonFormClose = (evt) => {
   if (evt.key === 'Escape') {
     evt.preventDefault();
-    if(document.activeElement === hashTagInput || document.activeElement === descriptionInput) {
+    if (isUploadMessageOpen) {
+      return;
+    }
+    if (document.activeElement === hashTagInput || document.activeElement === descriptionInput) {
       evt.stopPropagation();
     } else {
       clearFormFields();
@@ -77,101 +82,65 @@ function clearFormFields () {
   pristine.reset();
 }
 
-const onUploadSuccessEscKeydown = (evt) => {
-  if (evt.key === 'Escape') {
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
-    closeUploadSuccessMessage();
-  }
-};
-
-const onUploadSuccessOutsideClick = (evt) => {
-  if (!evt.target.closest('.success__inner')) {
-    evt.stopImmediatePropagation();
-    closeUploadSuccessMessage();
-  }
-};
-
-const onUploadSuccessButtonClick = (evt) => {
-  evt.stopImmediatePropagation();
-  closeUploadSuccessMessage();
-};
-
-function closeUploadSuccessMessage() {
-  const uploadSuccessMessage = document.querySelector('.success');
-  if (uploadSuccessMessage) {
-    uploadSuccessMessage.remove();
-    document.removeEventListener('keydown', onUploadSuccessEscKeydown);
-    document.removeEventListener('click', onUploadSuccessOutsideClick);
-    document.removeEventListener('click', onUploadSuccessButtonClick);
-  }
-}
-
-const showUploadSuccessMessage = () => {
-  const UploadSuccessMessage = successModalTemplate.cloneNode(true);
-  document.body.appendChild(UploadSuccessMessage);
-
-  const inner = UploadSuccessMessage.querySelector('.success__inner');
-  if (inner) {
-    inner.addEventListener('click', (evt) => evt.stopPropagation());
-  }
-
-  document.addEventListener('keydown', onUploadSuccessEscKeydown);
-  document.addEventListener('click', onUploadSuccessOutsideClick);
-  const closeButton = UploadSuccessMessage.querySelector('.success__button');
-  if (closeButton) {
-    closeButton.addEventListener('click', closeUploadSuccessMessage);
-  }
-};
-
-const onUploadErrorEscKeydown = (evt) => {
-  if (evt.key === 'Escape') {
-    evt.preventDefault();
-    evt.stopImmediatePropagation();
-    closeUploadErrorMessage();
-  }
-};
-
-const onUploadErrorOutsideClick = (evt) => {
-  if (!evt.target.closest('.error__inner')) {
-    evt.stopImmediatePropagation();
-    closeUploadErrorMessage();
-  }
-};
-
-const onUploadErrorButtonClick = (evt) => {
-  evt.stopImmediatePropagation();
-  closeUploadErrorMessage();
-};
-
-function closeUploadErrorMessage() {
-  const uploadErrorMessage = document.querySelector('.error');
-  if (uploadErrorMessage) {
-    uploadErrorMessage.remove();
-    document.removeEventListener('keydown', onUploadErrorEscKeydown, true);
-    document.removeEventListener('click', onUploadErrorOutsideClick);
-    document.removeEventListener('click', onUploadErrorButtonClick);
-  }
-}
-
-const showUploadErrorMessage = () => {
-  const uploadErrorMessage = errorModalTemplate.cloneNode(true);
-  document.body.appendChild(uploadErrorMessage);
-
-  const inner = uploadErrorMessage.querySelector('.error__inner');
-  if (inner) {
-    inner.addEventListener('click', (evt) => evt.stopPropagation());
-  }
-
-  document.addEventListener('keydown', onUploadErrorEscKeydown, true);
-  document.addEventListener('click', onUploadErrorOutsideClick);
-  const closeButton = uploadErrorMessage.querySelector('.error__button');
-  if (closeButton) {
-    closeButton.addEventListener('click', closeUploadErrorMessage);
-  }
-};
-
 uploadFile.addEventListener('change', openUploadImageForm);
+
+const onUploadMessageEscKeydown = (evt) => {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    closeUploadMessage();
+  }
+};
+
+const onUploadMessageOutsideClick = (evt) => {
+  if (!activeUploadMessage) {
+    return;
+  }
+  if (!evt.target.closest('.success__inner') && !evt.target.closest('.error__inner')) {
+    closeUploadMessage();
+  }
+};
+
+function closeUploadMessage() {
+  if (activeUploadMessage) {
+    activeUploadMessage.remove();
+    activeUploadMessage = null;
+  }
+  isUploadMessageOpen = false;
+  document.removeEventListener('keydown', onUploadMessageEscKeydown);
+  document.removeEventListener('click', onUploadMessageOutsideClick);
+}
+
+function showMessage(template, innerSelector, buttonSelector) {
+  closeUploadMessage();
+
+  const message = template.cloneNode(true);
+  document.body.appendChild(message);
+  activeUploadMessage = message;
+  isUploadMessageOpen = true;
+
+  const inner = message.querySelector(innerSelector);
+  if (inner) {
+    inner.addEventListener('click', (evt) => {
+      evt.stopPropagation();
+    });
+  }
+
+  const button = message.querySelector(buttonSelector);
+  if (button) {
+    button.addEventListener('click', () => {
+      closeUploadMessage();
+    });
+  }
+
+  document.addEventListener('keydown', onUploadMessageEscKeydown);
+  document.addEventListener('click', onUploadMessageOutsideClick);
+}
+
+const showUploadSuccessMessage = () =>
+  showMessage(successModalTemplate, '.success__inner', '.success__button');
+
+const showUploadErrorMessage = () =>
+  showMessage(errorModalTemplate, '.error__inner', '.error__button');
 
 const blockSubmitButton = () => {
   submitButton.disabled = true;

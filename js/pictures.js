@@ -35,11 +35,11 @@ const showDataError = () => {
 };
 
 const initPictures = async () => {
+  setFilterHandlers();
   try {
     allPictures = await getData();
     renderPictures(allPictures);
     filters.classList.remove('img-filters--inactive');
-    setFilterHandlers();
   } catch (error) {
     showDataError();
   }
