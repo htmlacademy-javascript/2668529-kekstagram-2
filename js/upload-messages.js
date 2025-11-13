@@ -2,7 +2,7 @@ const successModalTemplate = document.querySelector('#success').content.querySel
 const errorModalTemplate = document.querySelector('#error').content.querySelector('.error');
 
 let activeUploadMessage = null;
-let isUploadMessageOpen = false;
+let isMessageOpen = false;
 
 const onUploadMessageEscKeydown = (evt) => {
   if (evt.key === 'Escape') {
@@ -25,7 +25,7 @@ function closeUploadMessage() {
     activeUploadMessage.remove();
     activeUploadMessage = null;
   }
-  isUploadMessageOpen = false;
+  isMessageOpen = false;
   document.removeEventListener('keydown', onUploadMessageEscKeydown);
   document.removeEventListener('click', onUploadMessageOutsideClick);
 }
@@ -36,7 +36,7 @@ function showMessage(template, innerSelector, buttonSelector) {
   const message = template.cloneNode(true);
   document.body.appendChild(message);
   activeUploadMessage = message;
-  isUploadMessageOpen = true;
+  isMessageOpen = true;
 
   const inner = message.querySelector(innerSelector);
   if (inner) {
@@ -61,5 +61,7 @@ const showUploadSuccessMessage = () =>
 
 const showUploadErrorMessage = () =>
   showMessage(errorModalTemplate, '.error__inner', '.error__button');
+
+const isUploadMessageOpen = () => isMessageOpen;
 
 export { showUploadSuccessMessage, showUploadErrorMessage, isUploadMessageOpen };

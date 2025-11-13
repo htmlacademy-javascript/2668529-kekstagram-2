@@ -22,7 +22,7 @@ let pristine;
 const onEscapeButtonFormClose = (evt) => {
   if (evt.key === 'Escape') {
     evt.preventDefault();
-    if (isUploadMessageOpen) {
+    if (isUploadMessageOpen()) {
       return;
     }
     if (document.activeElement === hashTagInput || document.activeElement === descriptionInput) {
