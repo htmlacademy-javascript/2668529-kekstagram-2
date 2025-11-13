@@ -7,70 +7,71 @@ const defaultEffect = document.querySelector('#effect-none');
 
 let currentEffect = 'none';
 
+const EFFECTS = {
+  none: {
+    filter: () => '',
+    options: { range: { min: 0, max: 100 }, start: 100, step: 1 },
+  },
+  chrome: {
+    filter: (v) => `grayscale(${v})`,
+    options: { range: { min: 0, max: 1 }, start: 1, step: 0.1 },
+  },
+  sepia: {
+    filter: (v) => `sepia(${v})`,
+    options: { range: { min: 0, max: 1 }, start: 1, step: 0.1 },
+  },
+  marvin: {
+    filter: (v) => `invert(${v}%)`,
+    options: { range: { min: 0, max: 100 }, start: 100, step: 1 },
+  },
+  phobos: {
+    filter: (v) => `blur(${v}px)`,
+    options: { range: { min: 0, max: 3 }, start: 3, step: 0.1 },
+  },
+  heat: {
+    filter: (v) => `brightness(${v})`,
+    options: { range: { min: 1, max: 3 }, start: 3, step: 0.1 },
+  },
+};
+
 noUiSlider.create(sliderElement, {
   range: { min: 0, max: 100 },
   start: 100,
   step: 1,
-  connect: 'lower'
+  connect: 'lower',
 });
 
 const applyEffect = (effect, value) => {
-  const numericValue = parseFloat(value);
-  switch (effect) {
-    case 'chrome': imagePreview.style.filter = `grayscale(${numericValue})`; break;
-    case 'sepia': imagePreview.style.filter = `sepia(${numericValue})`; break;
-    case 'marvin': imagePreview.style.filter = `invert(${numericValue}%)`; break;
-    case 'phobos': imagePreview.style.filter = `blur(${numericValue}px)`; break;
-    case 'heat': imagePreview.style.filter = `brightness(${numericValue})`; break;
-    default: imagePreview.style.filter = '';
-  }
+  const effectData = EFFECTS[effect];
+  imagePreview.style.filter = effectData ? effectData.filter(parseFloat(value)) : '';
 };
 
 const setEffect = (effect) => {
   currentEffect = effect;
+  const { options } = EFFECTS[effect] || EFFECTS.none;
+
   if (effect === 'none') {
     effectLevelContainer.classList.add('hidden');
     imagePreview.style.filter = '';
-    return;
+  } else {
+    effectLevelContainer.classList.remove('hidden');
+    sliderElement.noUiSlider.updateOptions({
+      range: options.range,
+      start: options.start,
+      step: options.step,
+    });
+    applyEffect(effect, options.start);
   }
 
-  effectLevelContainer.classList.remove('hidden');
-
-  let settings;
-  switch (effect) {
-    case 'chrome':
-    case 'sepia': settings = { min: 0, max: 1, step: 0.1, start: 1 }; break;
-    case 'marvin': settings = { min: 0, max: 100, step: 1, start: 100 }; break;
-    case 'phobos': settings = { min: 0, max: 3, step: 0.1, start: 3 }; break;
-    case 'heat': settings = { min: 1, max: 3, step: 0.1, start: 3 }; break;
-  }
-
-  sliderElement.noUiSlider.updateOptions({
-    range: { min: settings.min, max: settings.max },
-    start: settings.start,
-    step: settings.step,
-  });
-
-  applyEffect(effect, settings.start);
-  effectLevelValue.value = settings.start;
+  effectLevelValue.value = options.start;
 };
 
 const resetEffects = () => {
-  imagePreview.style.filter = '';
-  effectLevelContainer.classList.add('hidden');
+  setEffect('none');
   currentEffect = 'none';
-
   if (defaultEffect) {
     defaultEffect.checked = true;
   }
-
-  sliderElement.noUiSlider.updateOptions({
-    range: { min: 0, max: 100 },
-    start: 100,
-    step: 1,
-  });
-
-  effectLevelValue.value = 100;
 };
 
 sliderElement.noUiSlider.on('update', (values, handle) => {
