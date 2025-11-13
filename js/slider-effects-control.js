@@ -88,4 +88,3 @@ const setupEffects = () => {
 };
 
 export { setupEffects, resetEffects };
-

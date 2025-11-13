@@ -5,4 +5,3 @@ import './preview.js';
 
 await initPictures();
 initFullSizePicture();
-

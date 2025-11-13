@@ -47,5 +47,3 @@ const showComments = (currentPictureComments) => {
 };
 
 export { showComments, clearComments };
-
-

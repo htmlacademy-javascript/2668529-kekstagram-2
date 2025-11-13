@@ -52,4 +52,3 @@ const setupValidation = () => {
 };
 
 export { setupValidation };
-
