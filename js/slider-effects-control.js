@@ -13,23 +13,23 @@ const EFFECTS = {
     options: { range: { min: 0, max: 100 }, start: 100, step: 1 },
   },
   chrome: {
-    filter: (v) => `grayscale(${v})`,
+    filter: (value) => `grayscale(${value})`,
     options: { range: { min: 0, max: 1 }, start: 1, step: 0.1 },
   },
   sepia: {
-    filter: (v) => `sepia(${v})`,
+    filter: (value) => `sepia(${value})`,
     options: { range: { min: 0, max: 1 }, start: 1, step: 0.1 },
   },
   marvin: {
-    filter: (v) => `invert(${v}%)`,
+    filter: (value) => `invert(${value}%)`,
     options: { range: { min: 0, max: 100 }, start: 100, step: 1 },
   },
   phobos: {
-    filter: (v) => `blur(${v}px)`,
+    filter: (value) => `blur(${value}px)`,
     options: { range: { min: 0, max: 3 }, start: 3, step: 0.1 },
   },
   heat: {
-    filter: (v) => `brightness(${v})`,
+    filter: (value) => `brightness(${value})`,
     options: { range: { min: 1, max: 3 }, start: 3, step: 0.1 },
   },
 };
