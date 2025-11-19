@@ -31,6 +31,7 @@ function closeBigPicture () {
 }
 
 function openBigPicture(picture) {
+  clearComments();
   bigPictureImg.src = picture.url;
   bigPictureImg.alt = picture.description;
   bigPictureLikesCount.textContent = picture.likes;

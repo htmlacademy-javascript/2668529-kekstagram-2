@@ -4,7 +4,7 @@ const fileChooser = document.querySelector('#upload-file');
 const preview = document.querySelector('.img-upload__preview img');
 const effectsPreviews = document.querySelectorAll('.effects__preview');
 
-fileChooser.addEventListener('change', () => {
+const onFileChooserChange = () => {
   const file = fileChooser.files[0];
   if (!file) {
     return;
@@ -19,4 +19,6 @@ fileChooser.addEventListener('change', () => {
       effectPreview.style.backgroundImage = `url(${objectUrl})`;
     });
   }
-});
+};
+
+fileChooser.addEventListener('change', onFileChooserChange);

@@ -1,9 +1,6 @@
 import { debounce } from './util.js';
 import { clearPictures, renderPictures, getAllPictures } from './pictures.js';
 
-const filters = document.querySelector('.img-filters');
-const filterButton = filters.querySelectorAll('.img-filters__button');
-
 const RANDOM_PICTURES_COUNT = 10;
 const RERENDER_DELAY = 500;
 
@@ -13,8 +10,13 @@ const FILTER = {
   discussed: 'filter-discussed',
 };
 
-const getRandomUniquePictures = (array, count) => {
-  const shuffled = [...array].sort(() => Math.random() - 0.5);
+const filters = document.querySelector('.img-filters');
+const filterButtons = filters.querySelectorAll('.img-filters__button');
+
+let debouncedFilter = null;
+
+const getRandomUniquePictures = (pictures, count) => {
+  const shuffled = [...pictures].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 };
 
@@ -38,17 +40,19 @@ const applyFilter = (filterId) => {
   renderPictures(filteredPictures);
 };
 
+const onFiltersClick = (evt) => {
+  const button = evt.target.closest('.img-filters__button');
+  if (!button) {
+    return;
+  }
+  filterButtons.forEach((btn) => btn.classList.remove('img-filters__button--active'));
+  button.classList.add('img-filters__button--active');
+  debouncedFilter(button.id);
+};
+
 const setFilterHandlers = () => {
-  const debouncedFilter = debounce(applyFilter, RERENDER_DELAY);
-  filters.addEventListener('click', (evt) => {
-    const button = evt.target.closest('.img-filters__button');
-    if (!button) {
-      return;
-    }
-    filterButton.forEach((btn) => btn.classList.remove('img-filters__button--active'));
-    button.classList.add('img-filters__button--active');
-    debouncedFilter(button.id);
-  });
+  debouncedFilter = debounce(applyFilter, RERENDER_DELAY);
+  filters.addEventListener('click', onFiltersClick);
 };
 
 export { setFilterHandlers };

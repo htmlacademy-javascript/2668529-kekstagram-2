@@ -1,6 +1,4 @@
 const COUNT_STEP = 5;
-let currentCount = 0;
-let comments = [];
 
 const bigPicture = document.querySelector('.big-picture');
 const commentsCount = bigPicture.querySelector('.social__comment-count');
@@ -8,7 +6,9 @@ const commentsLoader = bigPicture.querySelector('.social__comments-loader');
 const commentsTotalCount = bigPicture.querySelector('.social__comment-total-count');
 const socialComments = bigPicture.querySelector('.social__comments');
 const socialCommentTemplate = socialComments.querySelector('.social__comment');
-socialComments.innerHTML = '';
+
+let currentCount = 0;
+let comments = [];
 
 const showNextComments = () => {
   const socialCommentsFragment = document.createDocumentFragment();
@@ -33,17 +33,21 @@ const showNextComments = () => {
   currentCount = currentCount + COUNT_STEP;
 };
 
-const clearComments = () => {
-  currentCount = 0;
-  socialComments.innerHTML = '';
-  commentsLoader.classList.remove('hidden');
-  commentsLoader. removeEventListener('click', showNextComments);
+const onCommentsLoaderClick = () => {
+  showNextComments();
 };
 
 const showComments = (currentPictureComments) => {
   comments = currentPictureComments;
   showNextComments();
-  commentsLoader.addEventListener('click', showNextComments);
+  commentsLoader.addEventListener('click', onCommentsLoaderClick);
+};
+
+const clearComments = () => {
+  currentCount = 0;
+  socialComments.innerHTML = '';
+  commentsLoader.classList.remove('hidden');
+  commentsLoader. removeEventListener('click', onCommentsLoaderClick);
 };
 
 export { showComments, clearComments };

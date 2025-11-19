@@ -1,6 +1,4 @@
-const uploadImageForm = document.querySelector('.img-upload__form');
-const hashTagInput = uploadImageForm.querySelector('.text__hashtags');
-const descriptionInput = uploadImageForm.querySelector('.text__description');
+const HASHTAG_REGEX = /^#[a-zA-Zа-яА-ЯёЁ0-9]+$/;
 
 const ValidationRules = {
   MAX_COMMENT_LENGTH: 140,
@@ -9,14 +7,16 @@ const ValidationRules = {
   MAX_HASHTAG_COUNT: 5
 };
 
+const uploadImageForm = document.querySelector('.img-upload__form');
+const hashTagInput = uploadImageForm.querySelector('.text__hashtags');
+const descriptionInput = uploadImageForm.querySelector('.text__description');
+
 const validateHashtagsContent = (value) => {
   if (value === '') {
     return true;
   }
   const hashtags = value.split(/\s+/);
-  const hashtagRegex = /^#[a-zA-Zа-яА-ЯёЁ0-9]+$/;
-
-  return hashtags.every((tag) => hashtagRegex.test(tag) && tag.length <= ValidationRules.MAX_HASHTAGS_LENGTH &&
+  return hashtags.every((tag) => HASHTAG_REGEX.test(tag) && tag.length <= ValidationRules.MAX_HASHTAGS_LENGTH &&
     tag.length > ValidationRules.MIN_HASHTAGS_LENGTH);
 };
 
@@ -35,7 +35,7 @@ const validateHashtagsUnique = (value) => {
 
 const validateDescription = (value) => value.length <= ValidationRules.MAX_COMMENT_LENGTH;
 
-const setupValidation = () => {
+const defineValidation = () => {
   const pristine = new Pristine(uploadImageForm, {
     classTo: 'img-upload__field-wrapper',
     errorTextParent: 'img-upload__field-wrapper',
@@ -51,4 +51,4 @@ const setupValidation = () => {
   return pristine;
 };
 
-export { setupValidation };
+export { defineValidation };

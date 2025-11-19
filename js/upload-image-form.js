@@ -1,8 +1,13 @@
-import { setupValidation } from './form-fields-validation.js';
-import { setupScaling, resetScale } from './image-scaling.js';
-import { setupEffects, resetEffects } from './slider-effects-control.js';
+import { defineValidation } from './form-fields-validation.js';
+import { defineScaling, resetScale } from './image-scaling.js';
+import { defineEffects, resetEffects } from './slider-effects-control.js';
 import { sendData } from './api.js';
 import { showUploadErrorMessage, showUploadSuccessMessage, isUploadMessageOpen } from './upload-messages.js';
+
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Публикуется...'
+};
 
 const uploadImageForm = document.querySelector('.img-upload__form');
 const uploadFile = uploadImageForm.querySelector('#upload-file');
@@ -11,11 +16,6 @@ const uploadModalCancelButton = uploadImageModal.querySelector('#upload-cancel')
 const hashTagInput = uploadImageForm.querySelector('.text__hashtags');
 const descriptionInput = uploadImageForm.querySelector('.text__description');
 const submitButton = uploadImageForm.querySelector('#upload-submit');
-
-const SubmitButtonText = {
-  IDLE: 'Опубликовать',
-  SENDING: 'Публикуется...'
-};
 
 let pristine;
 
@@ -52,46 +52,11 @@ const onOutsideClickFormClose = (evt) => {
   }
 };
 
-function closeUploadImageForm() {
-  document.body.classList.remove('modal-open');
-  uploadImageModal.classList.add('hidden');
-  resetScale();
-  resetEffects();
-  document.removeEventListener('keydown', onEscapeButtonFormClose);
-  document.removeEventListener('click', onOutsideClickFormClose);
-  uploadModalCancelButton.removeEventListener('click', onFormCancelButtonClick);
-  uploadFile.value = '';
-}
-
-const openUploadImageForm = () => {
-  document.body.classList.add('modal-open');
-  uploadImageModal.classList.remove('hidden');
-  pristine = setupValidation(uploadImageForm);
-  setupScaling(uploadImageForm);
-  setupEffects(uploadImageForm);
-  uploadModalCancelButton.addEventListener('click', onFormCancelButtonClick);
-  document.addEventListener('keydown', onEscapeButtonFormClose);
-  document.addEventListener('click', onOutsideClickFormClose);
+const onUploadFileChange = () => {
+  openUploadImageForm();
 };
 
-function clearFormFields () {
-  uploadImageForm.reset();
-  pristine.reset();
-}
-
-uploadFile.addEventListener('change', openUploadImageForm);
-
-const blockSubmitButton = () => {
-  submitButton.disabled = true;
-  submitButton.textContent = SubmitButtonText.SENDING;
-};
-
-const unblockSubmitButton = () => {
-  submitButton.disabled = false;
-  submitButton.textContent = SubmitButtonText.IDLE;
-};
-
-uploadImageForm.addEventListener('submit', async (evt) => {
+const onUploadImageFormSubmit = async (evt) => {
   evt.preventDefault();
   const isValid = pristine.validate();
   if (!isValid) {
@@ -108,4 +73,44 @@ uploadImageForm.addEventListener('submit', async (evt) => {
   } finally {
     unblockSubmitButton();
   }
-});
+};
+
+function closeUploadImageForm() {
+  document.body.classList.remove('modal-open');
+  uploadImageModal.classList.add('hidden');
+  resetScale();
+  resetEffects();
+  document.removeEventListener('keydown', onEscapeButtonFormClose);
+  document.removeEventListener('click', onOutsideClickFormClose);
+  uploadModalCancelButton.removeEventListener('click', onFormCancelButtonClick);
+  uploadFile.value = '';
+}
+
+function openUploadImageForm() {
+  document.body.classList.add('modal-open');
+  uploadImageModal.classList.remove('hidden');
+  pristine = defineValidation(uploadImageForm);
+  defineScaling(uploadImageForm);
+  defineEffects(uploadImageForm);
+  uploadModalCancelButton.addEventListener('click', onFormCancelButtonClick);
+  document.addEventListener('keydown', onEscapeButtonFormClose);
+  document.addEventListener('click', onOutsideClickFormClose);
+}
+
+function blockSubmitButton() {
+  submitButton.disabled = true;
+  submitButton.textContent = SubmitButtonText.SENDING;
+}
+
+function unblockSubmitButton() {
+  submitButton.disabled = false;
+  submitButton.textContent = SubmitButtonText.IDLE;
+}
+
+function clearFormFields () {
+  uploadImageForm.reset();
+  pristine.reset();
+}
+
+uploadFile.addEventListener('change', onUploadFileChange);
+uploadImageForm.addEventListener('submit', onUploadImageFormSubmit);

@@ -1,12 +1,12 @@
 import { getData } from './api.js';
 import { setFilterHandlers } from './filter.js';
 
+const ERROR_MESSAGE_REMOVE_TIMEOUT = 5000;
+
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 const pictures = document.querySelector('.pictures');
 const templateDataError = document.querySelector('#data-error').content.querySelector('.data-error');
 const filters = document.querySelector('.img-filters');
-
-const ERROR_MESSAGE_REMOVE_TIMEOUT = 5000;
 
 let allPictures = [];
 
